@@ -1,4 +1,4 @@
 all:
 	mkdir -p bin
-	g++ src/main.cpp -lopencv_core -lopencv_imgproc -lopencv_highgui -o bin/sudoko-grab
+	g++ -std=c++11 src/main.cpp -lopencv_core -lopencv_imgproc -lopencv_highgui -lm -o bin/sudoko-grab
 	cp src/img/sudoku.jpg bin/

@@ -1,8 +1,21 @@
 #include <iostream>
+#include <vector>
+#include <cmath>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+
+void drawLine(cv::Vec2f line, cv::Mat &img, cv::Scalar rgb = CV_RGB(0, 0, 255))
+{
+    if (line[1] != 0) {
+        float m = -1 / tan(line[1]);
+        float c = line[0] / sin(line[1]);
+        cv::line(img, cv::Point(0, c), cv::Point(img.size().width, m * img.size().width + c), rgb);
+    } else {
+        cv::line(img, cv::Point(line[0], 0), cv::Point(line[0], img.size().height), rgb);
+    }
+}
 
 int main()
 {
@@ -51,6 +64,14 @@ int main()
 
     // Erode the "dilated" image
     cv::erode(outerBox, outerBox, kernel);
+
+    // Detect the lines
+    std::vector<cv::Vec2f> lines;
+    HoughLines(outerBox, lines, 1, CV_PI / 180, 200);
+    for (int i = 0; i < lines.size(); i++) {
+        drawLine(lines[i], outerBox, CV_RGB(0, 0, 128));
+    }
+
     cv::imshow("Sudoku Grab", outerBox);
     cv::waitKey(0);
 
